@@ -32,20 +32,27 @@ pipeline {
                 }
             }
         }
-        stage("deploy") { 
-            input { 
-                message "Select the environment to deploy to" 
-                ok "Done" 
-                parameters { 
-                    choice(name: 'ENV', choices: ['dev', 'staging', 'production'], description: 'Select the deployment environment') 
-                } 
-            } 
-            steps { 
-                script { 
-                    gv.deployApp() 
-                } 
-                echo "deploying to environment: ${params.ENV}" 
-            } 
+        stage("deploy") {
+            input {
+                message "Select the environment to deploy to"
+                ok "Done"
+                parameters {
+                    choice(name: 'ENV', choices: ['dev', 'staging', 'production'], description: 'Select the deployment environment')
+                }
+            }
+            steps {
+                script {
+                    gv.deployApp()
+                }
+                echo "deploying to environment: ${params.ENV}"
+                //withCredentials([usernamePassword(credentialsId: 'server-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                //    sh '''
+                //        echo "Deploying with username: $USERNAME and password: $PASSWORD"
+                //        # Here you would add your deployment commands, for example:
+                //       # scp -r ./build/* user@server:/path/to/deploy
+                //    '''
+                //}
+            }
         }
     }
     //    post {
