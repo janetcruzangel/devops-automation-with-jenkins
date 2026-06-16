@@ -1,62 +1,40 @@
 def gv
-pipeline {
+pipeline {   
     agent any //For any Jenkins agent available but could be specific if working on clusters, for example
-    parameters {
-        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: 'Version to build and deploy')
-        booleanParam(name: 'executeTests', defaultValue: true, description: 'Whether to run tests or not')
+    tools {
+        maven 'Maven'
     }
     stages {
         stage("init") {
             steps {
                 script {
-                    gv = load 'script.groovy'
+                    gv = load "script.groovy"
                 }
             }
         }
-        stage("build") {
+        stage("build jar") {
             steps {
                 script {
-                    gv.buildApp()
+                    gv.buildJar()
+
                 }
             }
         }
-        stage("test") {
-            when {
-                expression {
-                    params.executeTests == true
-                }
-            }
+
+        stage("build image") {
             steps {
                 script {
-                    gv.testApp()
+                    gv.buildImage()
                 }
             }
         }
+
         stage("deploy") {
-            input {
-                message: 'Select the environment to deploy to'
-                ok 'Done'
-                parameters {
-                    choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'production'], description: 'Select the deployment environment')
-                }
-            }
             steps {
                 script {
                     gv.deployApp()
                 }
-                echo 'deploying to environment: ${params.ENVIRONMENT}'
-                //withCredentials([usernamePassword(credentialsId: 'server-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                //    sh '''
-                //        echo "Deploying with username: $USERNAME and password: $PASSWORD"
-                //        # Here you would add your deployment commands, for example:
-                //       # scp -r ./build/* user@server:/path/to/deploy
-                //    '''
-                //}
             }
-        }
+        }               
     }
-    //    post {
-    //        always {          
-    //        }
-    //    }
-}
+} 
