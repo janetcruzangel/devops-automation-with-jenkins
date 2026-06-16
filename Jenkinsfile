@@ -1,5 +1,6 @@
 pipeline {
-    agent any //For any Jenkins agent available but could be specific if working on clusters, for example    stages {
+    agent any //For any Jenkins agent available but could be specific if working on clusters, for example    
+    stages {
         stage("test") {
             steps {
                 script {
