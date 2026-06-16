@@ -44,7 +44,7 @@ pipeline {
                 script {
                     gv.deployApp()
                 }
-                echo "deploying to environment: ${params.ENV}"
+                echo "deploying to environment: ${ENV}"
                 //withCredentials([usernamePassword(credentialsId: 'server-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                 //    sh '''
                 //        echo "Deploying with username: $USERNAME and password: $PASSWORD"
