@@ -1,62 +1,38 @@
-def gv
 pipeline {
     agent any //For any Jenkins agent available but could be specific if working on clusters, for example
-    parameters {
-        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: 'Version to build and deploy')
-        booleanParam(name: 'executeTests', defaultValue: true, description: 'Whether to run tests or not')
+    tools {
+        maven 'maven-3.9' // Specify the Maven version configured in Jenkins
     }
     stages {
-        stage("init") {
+        stage("build jar") {
             steps {
                 script {
-                    gv = load 'script.groovy'
+                    echo 'building the application...'
+                    sh 'mvn package'
                 }
             }
         }
-        stage("build") {
+        stage("build image") {
             steps {
                 script {
-                    gv.buildApp()
-                }
-            }
-        }
-        stage("test") {
-            when {
-                expression {
-                    params.executeTests == true
-                }
-            }
-            steps {
-                script {
-                    gv.testApp()
+                    echo 'building the docker image...'
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        sh '''
+                            echo "Logging in to Docker Hub with username: $DOCKER_USERNAME"
+                            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                            docker build -t janetcruzangel/demo-app:jma-2.0 .
+                            docker push janetcruzangel/demo-app:jma-2.0
+                        '''
+                    }
                 }
             }
         }
         stage("deploy") {
-            input {
-                message "Select the environment to deploy to"
-                ok "Done"
-                parameters {
-                    choice(name: 'ENV', choices: ['dev', 'staging', 'production'], description: 'Select the deployment environment')
-                }
-            }
             steps {
                 script {
-                    gv.deployApp()
-                }
-                echo "deploying to environment: ${ENV}"
-                //withCredentials([usernamePassword(credentialsId: 'server-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                //    sh '''
-                //        echo "Deploying with username: $USERNAME and password: $PASSWORD"
-                //        # Here you would add your deployment commands, for example:
-                //       # scp -r ./build/* user@server:/path/to/deploy
-                //    '''
-                //}
+                    echo 'deploying the application...'
+                }            
             }
         }
     }
-    //    post {
-    //        always {          
-    //        }
-    //    }
 }
