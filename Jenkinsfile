@@ -1,40 +1,37 @@
-def gv
-pipeline {   
-    agent any //For any Jenkins agent available but could be specific if working on clusters, for example
-    tools {
-        maven 'maven-3.9'
-    }
-    stages {
-        stage("init") {
+pipeline {
+    agent any //For any Jenkins agent available but could be specific if working on clusters, for example    stages {
+        stage("test") {
             steps {
                 script {
-                    gv = load "script.groovy"
+                    echo 'Testing the application...'
+                    echo 'Executing pipeline for branch ${BRANCH_NAME}' //This env var is only available for multibranch pipelines
                 }
             }
         }
-        stage("build jar") {
+        stage("build") {
+            when{
+                expression {
+                    return env.BRANCH_NAME == 'main' //Only build if the branch is main
+                }
+            }
             steps {
                 script {
-                    gv.buildJar()
-
+                    echo 'building the application...'
+                    sh 'mvn package'
                 }
             }
         }
-
-        stage("build image") {
-            steps {
-                script {
-                    gv.buildImage()
-                }
-            }
-        }
-
         stage("deploy") {
-            steps {
-                script {
-                    gv.deployApp()
+            when{
+                expression {
+                    return env.BRANCH_NAME == 'main' //Only build if the branch is main
                 }
             }
-        }               
+            steps {
+                script {
+                    echo 'deploying the application...'
+                }            
+            }
+        }
     }
-} 
+}
