@@ -2,7 +2,7 @@ def gv
 pipeline {   
     agent any //For any Jenkins agent available but could be specific if working on clusters, for example
     tools {
-        maven 'Maven'
+        maven 'maven-3.9'
     }
     stages {
         stage("init") {
