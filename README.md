@@ -1,6 +1,34 @@
-The source code folder (src) and file pom.xml in this project, belong to TechWorld With Nana.
+# Project Name: devops-automation-with-jenkins
 
-The only purpose to using this source code in this repository is to be able to use it through Jenkins pipelines for:
+This repository serves a **didactic purpose** to demonstrate automated deployment pipelines. It contains an external application alongside my custom deployment configuration.
 
-- Setting the Dockerfile used in a Docker image creation
-- Test the Jenkins Pipelines scripting with Groovy
+## ⚠️ Important Disclaimer & Code Ownership
+
+* **Source Code Ownership:** I do not own the application source code found in the `/src` (or relevant) directory.
+* **Original Creator:** All rights to the application code belong entirely to the original author, **Nana Janashia/Techworld with Nana]**.
+* **Original Repository:** You can view the authentic project at the https://gitlab.com/twn-devops-bootcamp/latest/08-jenkins/java-maven-app.
+* **My Contribution:** Setting the Dockerfile used for the Docker image creation and test the Jenkins Pipelines scripting with Groovy.
+* **Purpose:** This project is hosted strictly for educational, self-learning, and portfolio demonstration purposes.
+
+---
+
+## 🚀 Deployment Features
+
+This repository automates the infrastructure setup and application delivery using custom scripts:
+* **Infrastructure as Code:** Provisions target servers automatically.
+* **Containerization:** Packages the external application into production-ready environments.
+* **CI/CD Pipeline:** Automates testing, building, and deployment stages upon pushing code.
+* **Environment Management:** Handles configuration variables securely across staging and production.
+
+---
+
+## 🛠️ Technologies Used
+
+* **Application Stack:** Java, Maven (Belongs to the original author)
+* **Automation & Deployment:** Docker, Jenkins Pipelines, Groovy Scripts, GitHub Actions (My work)
+
+---
+
+## 📜 License
+
+* The original source code is subject to its own respective license conditions set by the original author. Please review the Tech With Nana site for compliance details.
